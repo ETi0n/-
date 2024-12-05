@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './PetitionBoard.css';
 
 const PetitionBoard = () => {
   const [petitions, setPetitions] = useState([]);
   const [sortOption, setSortOption] = useState('latest'); // 기본 정렬: 최신순
+  const navigate = useNavigate(); // 라우팅을 위한 useNavigate 훅
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -52,6 +54,11 @@ const PetitionBoard = () => {
     setPetitions(sortedPetitions);
   };
 
+  // 청원 클릭 시 상세 페이지로 이동
+  const handleCardClick = (id) => {
+    navigate(`/petition-detail/${id}`);
+  };
+
   return (
     <div className="petition-board">
       <h2>공개 청원 게시판</h2>
@@ -75,7 +82,11 @@ const PetitionBoard = () => {
       {/* 청원 목록 */}
       <div className="petition-list">
         {petitions.map((petition) => (
-          <div key={petition.id} className="petition-card">
+          <div
+            key={petition.id}
+            className="petition-card"
+            onClick={() => handleCardClick(petition.id)} // 카드 클릭 시 상세 페이지로 이동
+          >
             <h3>{petition.title}</h3>
             <p>{petition.summary}</p>
             <div className="card-footer">
