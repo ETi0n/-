@@ -1,22 +1,37 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './PetitionForm.css';
 
-const PetitionForm = () => {
+const PetitionForm = ({ addPetition }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState({ main: '', sub: '', subDetail: '' });
   const [content, setContent] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitted Petition:', { title, category, content, isAnonymous });
-    alert('청원이 제출되었습니다!');
+
+    const newPetition = {
+      title,
+      category,
+      content,
+      isAnonymous,
+      likes: 0,
+      status: '접수',
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+
+    addPetition(newPetition); // 상태에 새로운 청원 추가
+    alert('청원이 등록되었습니다.');
+    navigate('/petition-board'); // 게시판으로 이동
   };
 
   return (
     <div className="petition-form">
       <h2>건의사항 입력</h2>
       <form onSubmit={handleSubmit}>
+        {/* 제목 입력 */}
         <div className="form-group">
           <label>제목</label>
           <input
@@ -28,8 +43,9 @@ const PetitionForm = () => {
           />
         </div>
 
+        {/* 카테고리 선택 */}
         <div className="form-group">
-          <label>민원 분류</label>
+          <label>카테고리</label>
           <div className="category-select">
             <select
               value={category.main}
@@ -49,6 +65,7 @@ const PetitionForm = () => {
               <option value="">중분류</option>
               <option value="수업">수업</option>
               <option value="강의실">강의실</option>
+              <option value="지원">지원</option>
             </select>
             <select
               value={category.subDetail}
@@ -58,10 +75,12 @@ const PetitionForm = () => {
               <option value="">소분류</option>
               <option value="교재">교재</option>
               <option value="장비">장비</option>
+              <option value="서류">서류</option>
             </select>
           </div>
         </div>
 
+        {/* 내용 입력 */}
         <div className="form-group">
           <label>내용</label>
           <textarea
@@ -73,6 +92,7 @@ const PetitionForm = () => {
           ></textarea>
         </div>
 
+        {/* 익명 여부 체크 */}
         <div className="form-group">
           <label>
             <input
@@ -84,6 +104,7 @@ const PetitionForm = () => {
           </label>
         </div>
 
+        {/* 신청 버튼 */}
         <button type="submit">청원 신청</button>
       </form>
     </div>
